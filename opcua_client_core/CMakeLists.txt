@@ -24,15 +24,50 @@ set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type")
 add_subdirectory(${open62541pp_DIR} open62541pp_build)
 
 # If you're creating a node, for instance, "example_node"
-add_executable(example_node src/example_node.cpp)
-ament_target_dependencies(example_node rclcpp)
-
+add_executable(omros_client_node src/omros_client_node.cpp)
+target_include_directories(omros_client_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(omros_client_node rclcpp)
 # Linking the open62541pp library to the node
-target_link_libraries(example_node open62541pp)
-
+target_link_libraries(omros_client_node open62541pp)
 # Installation
-install(TARGETS example_node
+install(TARGETS omros_client_node
   DESTINATION lib/${PROJECT_NAME}
+)
+
+
+# Tutorial examples
+add_executable(example_server_node src/example_server_node.cpp)
+target_include_directories(example_server_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(example_server_node rclcpp)
+# Linking the open62541pp library to the node
+target_link_libraries(example_server_node open62541pp)
+# Installation
+install(TARGETS example_server_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+add_executable(example_client_node src/example_client_node.cpp)
+target_include_directories(example_client_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(example_client_node rclcpp)
+# Linking the open62541pp library to the node
+target_link_libraries(example_client_node open62541pp)
+# Installation
+install(TARGETS example_client_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+############################
+install(DIRECTORY include/
+  DESTINATION include/
 )
 
 # Here, we assume that the library is being built in the submodule's CMake.

@@ -1,4 +1,4 @@
-# ROS2 OPC-UA
+# Ros2 OPC-UA Client
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.cc-asp.fraunhofer.de/vsp/ros2_opcua_client.git
+git remote add origin https://gitlab.cc-asp.fraunhofer.de/ipa326/ros2-opcua-client.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.cc-asp.fraunhofer.de/vsp/ros2_opcua_client/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.cc-asp.fraunhofer.de/ipa326/ros2-opcua-client/-/settings/integrations)
 
 ## Collaborate with your team
 

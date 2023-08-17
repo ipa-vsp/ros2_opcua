@@ -22,22 +22,19 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Server date (UTC): " << dt.format("%Y-%m-%d %H:%M:%S") << std::endl;
 
-    opcua::Variant variant;
-    client.getNode({4, "MY_RAND2"}).readValue(variant);
+    auto opcua_node = client.getNode({4, "MY_RAND2"});
+    double value = opcua_node.readScalar<double>();
 
-    const auto* value = static_cast<double*>(variant.getScalar());
-    RCLCPP_INFO(node_->get_logger(), "Rand data: %f", value);
+    std::cout << "Readind RAND: " << value << std::endl;
 
-
-
-    // while(rclcpp::ok())
-    // {
-    //     auto rand = client.getNode(opcua::VariableId::new_Controller_0_GlobalVar_MY_RAND2);
-    //     const auto rr = rand.readScalar<double>();
-    //     RCLCPP_INFO(node_->get_logger(), "Rand data: %f", rr);
-    //     rclcpp::sleep_for(std::chrono::seconds(1));
-    //     exec->spin_once();
-    // }
+    // const auto* value = static_cast<double*>(variant.getScalar());
+    // RCLCPP_INFO(node_->get_logger(), "Rand data: %f", value);
+    while(rclcpp::ok())
+    {
+        value = opcua_node.readScalar<double>();
+        RCLCPP_INFO(node_->get_logger(), "Rand data: %f", value);
+        rclcpp::sleep_for(std::chrono::seconds(1));
+    }
 
     client.disconnect();
     rclcpp::shutdown();

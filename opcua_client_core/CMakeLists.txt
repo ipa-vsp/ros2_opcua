@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
   open62541pp
   GIT_REPOSITORY https://github.com/open62541pp/open62541pp.git
-  GIT_TAG 1eda60d662c2afb73d0f15898f8eb98c6f85e956
+  GIT_TAG e8fb97e704447c52538a8b40d1d3295c12d9dd81
   GIT_PROGRESS TRUE
   GIT_SHALLOW TRUE
 )

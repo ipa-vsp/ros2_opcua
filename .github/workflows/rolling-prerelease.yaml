@@ -1,4 +1,4 @@
- name: Rolling Prerelease-Test
+name: Rolling Prerelease-Test
 
 on:
   workflow_dispatch:

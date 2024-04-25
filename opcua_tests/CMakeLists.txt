@@ -37,7 +37,7 @@ ament_target_dependencies(example_client_node
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 
-install(TARGETS example_server_node example_client_node 
+install(TARGETS example_server_node example_client_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

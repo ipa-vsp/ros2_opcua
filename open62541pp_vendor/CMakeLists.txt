@@ -47,25 +47,25 @@ ament_vendor(open62541pp_vendor
     -DBUILD_SHARED_LIBS:BOOL=ON
 )
 
-# install(
-#   TARGETS open62541pp
-#   EXPORT export_${PROJECT_NAME}
-#   ARCHIVE DESTINATION lib
-#   LIBRARY DESTINATION lib
-#   RUNTIME DESTINATION bin
-# )
+install(
+  TARGETS open62541pp
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 # # Export the necessary directories
-# ament_export_include_directories(
-#   include
-# )
-# ament_export_libraries(
-#   open62541pp
-# )
+ament_export_include_directories(
+  include
+)
+ament_export_libraries(
+  open62541pp
+)
 
-# ament_export_targets(
-#   export_${PROJECT_NAME}
-# )
+ament_export_targets(
+  export_${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

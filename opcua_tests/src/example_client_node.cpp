@@ -2,7 +2,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "open62541pp/open62541pp.h"
-#include "opcua_client_core/custom_datatype.h"
+#include "opcua_tests/custom_datatype.h"
 
 
 int main(int argc, char* argv[]) {
@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 
     exec->add_node(node_);
 
-        opcua::Client client;
+    opcua::Client client;
  
     // Get custom type definitions from common header
     const auto& dataTypePoint = getPointDataType();
@@ -31,58 +31,59 @@ int main(int argc, char* argv[]) {
     // Read custom variables
     opcua::Variant variant;
  
-    client.getNode({1, "Point"}).readValue(variant);
+    variant = client.getNode({1, "Point"}).readValue();
     if (variant.isType(dataTypePoint)) {
-        const auto* p = static_cast<Point*>(variant.getScalar());
+        const auto* p = static_cast<Point*>(variant.data());
         std::cout << "Point:\n";
         std::cout << "- x = " << p->x << "\n";
         std::cout << "- y = " << p->y << "\n";
         std::cout << "- z = " << p->z << "\n";
     }
  
-    client.getNode({1, "PointVec"}).readValue(variant);
+    variant = client.getNode({1, "PointVec"}).readValue();
     // Variants store non-builtin data types as ExtensionObjects. If the data type is known to the
     // client/server, open62541 unwraps scalar objects transparently in the encoding layer:
     // https://www.open62541.org/doc/master/types.html#variant
     // Arrays can not be unwrapped easily, because the array is an array of ExtensionObjects.
     // The array of unwrapped objects isn't available contiguously in memory and open62541 won't
     // transparently unwrap the array. So we have to do the unwrapping ourselves:
-    if (variant.isType(opcua::Type::ExtensionObject)) {
-        auto* arrExt = variant.getArray<opcua::ExtensionObject>();
-        for (size_t i = 0; i < variant.getArrayLength(); ++i) {
-            const auto* p = static_cast<Point*>(arrExt[i].getDecodedData());  // NOLINT
-            std::cout << "PointVec[" << i << "]:\n";
+    if (variant.isArray() && variant.isType<opcua::ExtensionObject>()) {
+        size_t i = 0;
+        for (auto&& extObj : variant.getArray<opcua::ExtensionObject>()) {
+            const auto* p = static_cast<Point*>(extObj.getDecodedData());
+            std::cout << "PointVec[" << i++ << "]:\n";
             std::cout << "- x = " << p->x << "\n";
             std::cout << "- y = " << p->y << "\n";
             std::cout << "- z = " << p->z << "\n";
         }
     }
  
-    client.getNode({1, "Measurements"}).readValue(variant);
+    variant = client.getNode({1, "Measurements"}).readValue();
     if (variant.isType(dataTypeMeasurements)) {
-        const auto* m = static_cast<Measurements*>(variant.getScalar());
+        const auto* m = static_cast<Measurements*>(variant.data());
         std::cout << "Measurements:\n";
         std::cout << "- description = " << m->description << "\n";
-        for (size_t i = 0; i < m->measurementsSize; ++i) {
-            std::cout << "- measurements[" << i << "] = " << m->measurements[i] << "\n";  // NOLINT
+        size_t i = 0;
+        for (auto&& value : opcua::Span(m->measurements, m->measurementsSize)) {
+            std::cout << "- measurements[" << i++ << "] = " << value << "\n";
         }
     }
  
-    client.getNode({1, "Opt"}).readValue(variant);
+    variant = client.getNode({1, "Opt"}).readValue();
     auto formatOptional = [](const auto* ptr) {
         return ptr == nullptr ? "NULL" : std::to_string(*ptr);
     };
-    if (variant.isType(dataTypeOpt)) {
-        const auto* opt = static_cast<Opt*>(variant.getScalar());
+    if (variant.isScalar() && variant.isType(dataTypeOpt)) {
+        const auto* opt = static_cast<Opt*>(variant.data());
         std::cout << "Opt:\n";
         std::cout << "- a = " << opt->a << "\n";
         std::cout << "- b = " << formatOptional(opt->b) << "\n";
         std::cout << "- c = " << formatOptional(opt->c) << "\n";
     }
  
-    client.getNode({1, "Uni"}).readValue(variant);
+    variant = client.getNode({1, "Uni"}).readValue();
     if (variant.isType(dataTypeUni)) {
-        const auto* uni = static_cast<Uni*>(variant.getScalar());
+        const auto* uni = static_cast<Uni*>(variant.data());
         std::cout << "Uni:\n";
         std::cout << "- switchField = " << static_cast<int>(uni->switchField) << "\n";
         if (uni->switchField == UniSwitch::OptionA) {
@@ -91,6 +92,11 @@ int main(int argc, char* argv[]) {
         if (uni->switchField == UniSwitch::OptionB) {
             std::cout << "- optionB = " << opcua::String(uni->fields.optionB) << "\n";  // NOLINT
         }
+    }
+ 
+    variant = client.getNode({1, "Color"}).readValue();
+    if (variant.isType<int32_t>()) {
+        std::cout << "Color: " << variant.getScalar<int32_t>() << "\n";
     }
 
     client.disconnect();

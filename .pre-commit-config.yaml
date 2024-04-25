@@ -66,7 +66,7 @@ repos:
   #       entry: ament_lint_cmake
   #       language: system
   #       files: CMakeLists\.txt$
-  #       exclude: lely_core_libraries\/CMakeLists\.txt$
+  #       # exclude:
 
   # # Copyright
   # - repo: local

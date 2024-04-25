@@ -12,13 +12,14 @@ struct Point
     float z;
 };
 
-const opcua::DataType &getPointDataType()
+const opcua::DataType & getPointDataType()
 {
-    static const opcua::DataType dt = opcua::DataTypeBuilder<Point>::createStructure("Point", {1, 4242}, {1, 1})
-                                          .addField<&Point::x>("x")
-                                          .addField<&Point::y>("y")
-                                          .addField<&Point::z>("z")
-                                          .build();
+    static const opcua::DataType dt =
+        opcua::DataTypeBuilder<Point>::createStructure("Point", {1, 4242}, {1, 1})
+            .addField<&Point::x>("x")
+            .addField<&Point::y>("y")
+            .addField<&Point::z>("z")
+            .build();
     return dt;
 }
 
@@ -27,10 +28,10 @@ struct Measurements
 {
     opcua::String description;
     size_t measurementsSize;
-    float *measurements;
+    float * measurements;
 };
 
-const opcua::DataType &getMeasurementsDataType()
+const opcua::DataType & getMeasurementsDataType()
 {
     static const opcua::DataType dt =
         opcua::DataTypeBuilder<Measurements>::createStructure("Measurements", {1, 4443}, {1, 2})
@@ -44,17 +45,18 @@ const opcua::DataType &getMeasurementsDataType()
 struct Opt
 {
     int16_t a;
-    float *b;
-    float *c;
+    float * b;
+    float * c;
 };
 
-const opcua::DataType &getOptDataType()
+const opcua::DataType & getOptDataType()
 {
-    static const opcua::DataType dt = opcua::DataTypeBuilder<Opt>::createStructure("Opt", {1, 4644}, {1, 3})
-                                          .addField<&Opt::a>("a")
-                                          .addField<&Opt::b>("b")
-                                          .addField<&Opt::c>("c")
-                                          .build();
+    static const opcua::DataType dt =
+        opcua::DataTypeBuilder<Opt>::createStructure("Opt", {1, 4644}, {1, 3})
+            .addField<&Opt::a>("a")
+            .addField<&Opt::b>("b")
+            .addField<&Opt::c>("c")
+            .build();
     return dt;
 }
 
@@ -77,12 +79,13 @@ struct Uni
     } fields;
 };
 
-const opcua::DataType &getUniDataType()
+const opcua::DataType & getUniDataType()
 {
-    static const opcua::DataType dt = opcua::DataTypeBuilder<Uni>::createUnion("Uni", {1, 4845}, {1, 4})
-                                          .addUnionField<&Uni::fields, double>("optional")
-                                          .addUnionField<&Uni::fields, UA_String>("optionB", UA_TYPES[UA_TYPES_STRING])
-                                          .build();
+    static const opcua::DataType dt =
+        opcua::DataTypeBuilder<Uni>::createUnion("Uni", {1, 4845}, {1, 4})
+            .addUnionField<&Uni::fields, double>("optional")
+            .addUnionField<&Uni::fields, UA_String>("optionB", UA_TYPES[UA_TYPES_STRING])
+            .build();
     return dt;
 }
 
@@ -94,8 +97,9 @@ enum class Color : int32_t
     Yellow = 2,
 };
 
-const opcua::DataType &getColorDataType()
+const opcua::DataType & getColorDataType()
 {
-    static const opcua::DataType dt = opcua::DataTypeBuilder<Color>::createEnum("Color", {1, 4946}, {1, 5}).build();
+    static const opcua::DataType dt =
+        opcua::DataTypeBuilder<Color>::createEnum("Color", {1, 4946}, {1, 5}).build();
     return dt;
 }

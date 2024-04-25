@@ -4,7 +4,7 @@
 #include "open62541pp/open62541pp.h"
 #include "rclcpp/rclcpp.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
 
@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
     opcua::Client client;
 
     // Get custom type definitions from common header
-    const auto &dataTypePoint = getPointDataType();
-    const auto &dataTypeMeasurements = getMeasurementsDataType();
-    const auto &dataTypeOpt = getOptDataType();
-    const auto &dataTypeUni = getUniDataType();
+    const auto & dataTypePoint = getPointDataType();
+    const auto & dataTypeMeasurements = getMeasurementsDataType();
+    const auto & dataTypeOpt = getOptDataType();
+    const auto & dataTypeUni = getUniDataType();
 
     // Provide custom data type definitions to client
     client.setCustomDataTypes({dataTypePoint, dataTypeMeasurements, dataTypeOpt, dataTypeUni});
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     variant = client.getNode({1, "Point"}).readValue();
     if (variant.isType(dataTypePoint))
     {
-        const auto *p = static_cast<Point *>(variant.data());
+        const auto * p = static_cast<Point *>(variant.data());
         std::cout << "Point:\n";
         std::cout << "- x = " << p->x << "\n";
         std::cout << "- y = " << p->y << "\n";
@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
     if (variant.isArray() && variant.isType<opcua::ExtensionObject>())
     {
         size_t i = 0;
-        for (auto &&extObj : variant.getArray<opcua::ExtensionObject>())
+        for (auto && extObj : variant.getArray<opcua::ExtensionObject>())
         {
-            const auto *p = static_cast<Point *>(extObj.getDecodedData());
+            const auto * p = static_cast<Point *>(extObj.getDecodedData());
             std::cout << "PointVec[" << i++ << "]:\n";
             std::cout << "- x = " << p->x << "\n";
             std::cout << "- y = " << p->y << "\n";
@@ -64,21 +64,22 @@ int main(int argc, char *argv[])
     variant = client.getNode({1, "Measurements"}).readValue();
     if (variant.isType(dataTypeMeasurements))
     {
-        const auto *m = static_cast<Measurements *>(variant.data());
+        const auto * m = static_cast<Measurements *>(variant.data());
         std::cout << "Measurements:\n";
         std::cout << "- description = " << m->description << "\n";
         size_t i = 0;
-        for (auto &&value : opcua::Span(m->measurements, m->measurementsSize))
+        for (auto && value : opcua::Span(m->measurements, m->measurementsSize))
         {
             std::cout << "- measurements[" << i++ << "] = " << value << "\n";
         }
     }
 
     variant = client.getNode({1, "Opt"}).readValue();
-    auto formatOptional = [](const auto *ptr) { return ptr == nullptr ? "NULL" : std::to_string(*ptr); };
+    auto formatOptional = [](const auto * ptr)
+    { return ptr == nullptr ? "NULL" : std::to_string(*ptr); };
     if (variant.isScalar() && variant.isType(dataTypeOpt))
     {
-        const auto *opt = static_cast<Opt *>(variant.data());
+        const auto * opt = static_cast<Opt *>(variant.data());
         std::cout << "Opt:\n";
         std::cout << "- a = " << opt->a << "\n";
         std::cout << "- b = " << formatOptional(opt->b) << "\n";
@@ -88,16 +89,16 @@ int main(int argc, char *argv[])
     variant = client.getNode({1, "Uni"}).readValue();
     if (variant.isType(dataTypeUni))
     {
-        const auto *uni = static_cast<Uni *>(variant.data());
+        const auto * uni = static_cast<Uni *>(variant.data());
         std::cout << "Uni:\n";
         std::cout << "- switchField = " << static_cast<int>(uni->switchField) << "\n";
         if (uni->switchField == UniSwitch::optional)
         {
-            std::cout << "- optional = " << uni->fields.optional << "\n"; // NOLINT
+            std::cout << "- optional = " << uni->fields.optional << "\n";  // NOLINT
         }
         if (uni->switchField == UniSwitch::OptionB)
         {
-            std::cout << "- optionB = " << opcua::String(uni->fields.optionB) << "\n"; // NOLINT
+            std::cout << "- optionB = " << opcua::String(uni->fields.optionB) << "\n";  // NOLINT
         }
     }
 

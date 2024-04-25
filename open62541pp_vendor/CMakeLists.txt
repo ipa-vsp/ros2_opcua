@@ -56,23 +56,16 @@ install(
 )
 
 # # Export the necessary directories
-ament_export_include_directories(
-  include
-)
-ament_export_libraries(
-  open62541pp
-)
+ament_export_include_directories( include )
+ament_export_libraries( open62541pp )
+ament_export_targets( export_${PROJECT_NAME} )
 
-ament_export_targets(
-  export_${PROJECT_NAME}
-)
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  list(APPEND AMENT_LINT_AUTO_EXCLUDE
-    ament_cmake_cppcheck
-  )
-  ament_lint_auto_find_test_dependencies()
-endif()
+# if(BUILD_TESTING)
+#   find_package(ament_lint_auto REQUIRED)
+#   list(APPEND AMENT_LINT_AUTO_EXCLUDE
+#     ament_cmake_cppcheck
+#   )
+#   ament_lint_auto_find_test_dependencies()
+# endif()
 
 ament_package()

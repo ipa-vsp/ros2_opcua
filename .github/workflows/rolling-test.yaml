@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         ROS_DISTRO: [rolling]
-        ROS_REPO: [testing]
+        ROS_REPO: [main]
     env:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
     steps:

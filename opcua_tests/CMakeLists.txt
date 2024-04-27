@@ -11,6 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(open62541pp REQUIRED)
 find_package(open62541pp_vendor REQUIRED)
 
+generate_datatype_headers(test)
+
 set(THIS_PACKAGE_INCLUDE_DEPENDS rclcpp open62541pp open62541pp_vendor)
 
 # Tutorial examples
@@ -30,6 +32,10 @@ ament_target_dependencies(example_client_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 install(TARGETS example_server_node example_client_node
         DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY include/
+  DESTINATION include/
+)
 
 # if(BUILD_TESTING) find_package(ament_lint_auto REQUIRED) # the following line
 # skips the linter which checks for copyrights set(ament_cmake_copyright_FOUND

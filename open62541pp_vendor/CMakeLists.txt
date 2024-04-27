@@ -8,6 +8,8 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_vendor_package REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+set(python_version "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 # uncomment the following section in order to fill in further dependencies
 # manually. find_package(<dependency> REQUIRED)
 
@@ -21,18 +23,10 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE)
 
 # # # Set the CMake arguments for the library
-set(UAPP_BUILD_EXAMPLES
-    ON
-    CACHE BOOL "Build examples for open62541pp")
-set(UAPP_BUILD_TESTS
-    ON
-    CACHE BOOL "Build tests for open62541pp")
-set(CMAKE_BUILD_TYPE
-    Debug
-    CACHE STRING "Set the build type")
-set(BUILD_SHARED_LIBS
-    ON
-    CACHE BOOL "Build shared libraries")
+set(UAPP_BUILD_EXAMPLES ON CACHE BOOL "Build examples for open62541pp")
+set(UAPP_BUILD_TESTS ON CACHE BOOL "Build tests for open62541pp")
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type")
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
 set(UA_ENABLE_ENCRYPTION OPENSSL)
 # set(UA_ENABLE_ENCRYPTION STREQUAL "OPENSSL")
 
@@ -56,6 +50,28 @@ ament_vendor(
   -DCMAKE_BUILD_TYPE=Debug
   -DBUILD_SHARED_LIBS:BOOL=ON)
 
+# Datatype headers generator
+set(datatype_cmake_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include("${datatype_cmake_DIR}/open62541pp_datatype_headers-extras.cmake" NO_POLICY_SCOPE)
+install(
+  DIRECTORY cmake
+  DESTINATION share/${PROJECT_NAME}
+)
+
+ament_python_install_package(dtgen SCRIPTS_DESTINATION lib/dtgen)
+
+# install entry-point script(s) in bin as well
+install(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_python/dtgen/scripts/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    USE_SOURCE_PERMISSIONS
+)
+
+# install(DIRECTORY templates
+#   DESTINATION share/${PROJECT_NAME}/templates
+# )
+
+# Install project
 install(
   TARGETS open62541pp
   EXPORT export_${PROJECT_NAME}
@@ -72,4 +88,7 @@ ament_export_targets(export_${PROJECT_NAME})
 # AMENT_LINT_AUTO_EXCLUDE ament_cmake_cppcheck )
 # ament_lint_auto_find_test_dependencies() endif()
 
-ament_package()
+ament_package(
+  CONFIG_EXTRAS
+  "${datatype_cmake_DIR}/open62541pp_datatype_headers-extras.cmake"
+)

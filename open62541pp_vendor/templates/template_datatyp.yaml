@@ -1,0 +1,12 @@
+variable1: 
+  type: struct
+  typeID: {1, 1} # example
+  bynaryTypeID: {1, 4023 } # example
+  elements: 
+    - { type: <datatype>, name: name } # datatype and names
+
+varialble2: 
+  type: init
+  typeID: {1, 1} # example
+  bynaryTypeID: {1, 4023 } # example
+  element: "name"

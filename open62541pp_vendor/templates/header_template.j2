@@ -1,0 +1,14 @@
+// header_template.j2
+#ifndef GENERATED_DATATYPES_HPP
+#define GENERATED_DATATYPES_HPP
+
+{% for var_name, var_details in data.items() %}
+struct {{ var_name }}
+{
+    {% for element in var_details.elements %}
+    {{ element.type }} {{ element.name }};
+    {% endfor %}
+};
+{% endfor %}
+
+#endif // GENERATED_DATATYPES_HPP

@@ -11,7 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(open62541pp REQUIRED)
 find_package(open62541pp_vendor REQUIRED)
 
-generate_datatype_headers(test)
+generate_datatype_headers(testoutiiiiii)
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS rclcpp open62541pp open62541pp_vendor)
 

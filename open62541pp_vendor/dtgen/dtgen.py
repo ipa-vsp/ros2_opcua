@@ -31,7 +31,7 @@ def generate_header(yaml_path, output_dir):
     output = template.render(data=data)
 
     # Write the output to a header file
-    header_filename = f"{output_dir}/generated_datatypes.hpp"
+    header_filename = f"{output_dir}"
     with open(header_filename, 'w') as header_file:
         header_file.write(output)
 

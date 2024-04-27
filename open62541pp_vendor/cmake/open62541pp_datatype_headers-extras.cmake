@@ -7,8 +7,10 @@ macro(generate_datatype_headers TARGET)
   message("Template directory: ${CMAKE_INSTALL_PREFIX}/bin/templates")
 
   add_custom_command(
+    COMMENT "Generating datatype headers from YAML .... "
     OUTPUT "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp"
-    COMMAND dtgen "${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}.yml" "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp" "${CMAKE_INSTALL_PREFIX}/bin/templates"
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/include/
+    COMMAND dtgen "${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}.yml" "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp"
     COMMENT "Generating datatype headers from YAML"
     MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}.yml"
     DEPENDS dtgen
@@ -17,6 +19,10 @@ macro(generate_datatype_headers TARGET)
   add_custom_target(
     ${TARGET} ALL
     DEPENDS "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp"
+  )
+
+  install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
+    DESTINATION include/
   )
   
   if(NOT EXISTS "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp")

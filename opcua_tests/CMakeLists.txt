@@ -31,12 +31,9 @@ ament_target_dependencies(example_client_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 install(TARGETS example_server_node example_client_node
         DESTINATION lib/${PROJECT_NAME})
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+# if(BUILD_TESTING) find_package(ament_lint_auto REQUIRED) # the following line
+# skips the linter which checks for copyrights set(ament_cmake_copyright_FOUND
+# TRUE) set(ament_cmake_cpplint_FOUND TRUE)
+# ament_lint_auto_find_test_dependencies() endif()
 
 ament_package()

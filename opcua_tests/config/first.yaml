@@ -1,7 +1,7 @@
-variable1: 
+variable1:
   type: struct
-  typeID: {1, 1} # example
-  bynaryTypeID: {1, 4023 } # example
-  elements: 
+  typeID: "{1, 1}" # example
+  bynaryTypeID: "{1, 4023 }" # example
+  elements:
     - { type: int, name: name } # datatype and names
     - { type: bool, name: name1 }

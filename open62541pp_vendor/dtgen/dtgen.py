@@ -4,9 +4,10 @@ import jinja2
 import os
 from ament_index_python import get_package_share_directory
 
+
 def generate_header(yaml_path, output_dir):
     # Load YAML file
-    with open(yaml_path, 'r') as file:
+    with open(yaml_path, "r") as file:
         data = yaml.safe_load(file)
 
     # Define the inline Jinja2 template
@@ -32,10 +33,11 @@ def generate_header(yaml_path, output_dir):
 
     # Write the output to a header file
     header_filename = f"{output_dir}"
-    with open(header_filename, 'w') as header_file:
+    with open(header_filename, "w") as header_file:
         header_file.write(output)
 
     print(f"Header file generated at {header_filename}")
+
 
 def main():
     if len(sys.argv) != 3:
@@ -49,6 +51,7 @@ def main():
     except Exception as e:
         print(f"Error generating headers: {str(e)}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

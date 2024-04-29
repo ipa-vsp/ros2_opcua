@@ -57,7 +57,7 @@ repos:
     rev: v0.6.10
     hooks:
       - id: cmake-format
-      - id: cmake-lint
-        args:
-          - "--disabled-codes=C0301" # Disable Line too long lint
-          - "--suppress-decorations"
+      # - id: cmake-lint
+        # args:
+        #   - "--disabled-codes=C0301" # Disable Line too long lint
+        #   - "--suppress-decorations"

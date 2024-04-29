@@ -74,7 +74,7 @@ install(
 #   DESTINATION share/${PROJECT_NAME}/templates
 # )
 
-# # Export the necessary directories
+# Export the necessary directories
 ament_export_include_directories(include)
 ament_export_libraries(open62541pp)
 ament_export_targets(export_${PROJECT_NAME})

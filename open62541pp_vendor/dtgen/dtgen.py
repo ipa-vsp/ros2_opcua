@@ -4,6 +4,7 @@ import jinja2
 import os
 from ament_index_python import get_package_share_directory
 
+
 def gen_template_string():
     template = """
 #ifndef {{ header_guard }}
@@ -60,10 +61,10 @@ namespace opcua {
             {
                 throw std::runtime_error("Invalid encoding type for UA_ExtensionObject");
             }
-            
+
             nodeIdInfoIN.namespaceIndex = src.content.encoded.typeId.namespaceIndex;
             nodeIdInfoIN.identifier = src.content.encoded.typeId.identifier.numeric;
-            
+
             if (src.content.encoded.body.length != sizeof({{ struct_name }}))
             {
                 throw std::runtime_error("Size mismatch between {{ struct_name }} and UA_ExtensionObject body length");

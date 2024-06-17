@@ -19,6 +19,8 @@ namespace ros2_opcua
         virtual void deactivate() = 0;
         virtual void cleanup() = 0;
         virtual void shutdown() = 0;
+
+        virtual rclcpp::node_interfaces::NodeBaseInterface::SharedPtr get_node_base_interface() = 0;
     };
 
     class LifecycleOpcUAClient : public OpcUAClientInterface, public rclcpp_lifecycle::LifecycleNode
@@ -32,9 +34,17 @@ namespace ros2_opcua
                 node_opcua_client_ = std::make_shared<ros2_opcua::node_interface::NodeOpcUAClient<rclcpp_lifecycle::LifecycleNode>>(this);
             }
 
-            void init() override
+            virtual void init() override;
+
+            rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(const rclcpp_lifecycle::State & state);
+            rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(const rclcpp_lifecycle::State & state);
+            rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & state);
+            rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State & state);
+            rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(const rclcpp_lifecycle::State & state);
+
+            rclcpp::node_interfaces::NodeBaseInterface::SharedPtr get_node_base_interface() override
             {
-                RCLCPP_INFO(get_logger(), "Initializing LifecycleOpcUAClient");
+                return rclcpp_lifecycle::LifecycleNode::get_node_base_interface();
             }
     };
 }

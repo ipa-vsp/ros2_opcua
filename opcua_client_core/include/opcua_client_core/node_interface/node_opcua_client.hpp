@@ -1,6 +1,7 @@
 #ifndef NODE_OPCUA_CLIENT_HPP__
 #define NODE_OPCUA_CLIENT_HPP__
 
+#include <yaml-cpp/yaml.h>
 #include "opcua_client_core/node_interface/node_opcua_client_interface.hpp"
 
 namespace ros2_opcua
@@ -16,27 +17,34 @@ namespace ros2_opcua
                 node_ = node;
             }
 
-            void createClient();
-            void connectClient();
-            void disconnectClient();
-            void createSubscription();
-            void createMonitoredItems();
-            void readValue();
-            void writeValue();
-            void browse();
-            void callMethod();
-
+            void init() override;
             void configure() override;
             void activate() override;
             void deactivate() override;
             void cleanup() override;
             void shutdown() override;
 
-        private:
-            NODETYPE *node_{nullptr};
-            std::unique_ptr<opcua::Client> client_{nullptr};
-            mutable std::shared_mutex client_mutex_{};
-            mutable std::shared_mutex rw_mutex_{};
+            opcua::Client &getClient() { return *opcua_client_;}
+
+        protected:
+            bool createClient();
+            void connectClient(const std::string &endpointURL);
+            void disconnectClient();
+            void createSubscription();
+            void createMonitoredItems();
+            opcua::Variant readValue(const opcua::NodeId &nodeId);
+            void writeValue(const opcua::NodeId &nodeId, const opcua::Variant &value);
+            void browse();
+            void callMethod();
+
+        protected:
+            NODETYPE *node_;
+            std::string endpoint_url_;
+            std::unique_ptr<opcua::Client> opcua_client_;
+            mutable std::shared_mutex opcua_client_mutex_;
+            mutable std::shared_mutex opcua_rw_mutex_;
+
+            YAML::Node config_;
         };
     }
 }

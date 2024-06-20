@@ -87,7 +87,8 @@ void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::configure()
 
   RCLCPP_INFO(node_->get_logger(), "Loaded2 endpoint url: %s", endpoint_url_.c_str());
   RCLCPP_INFO(node_->get_logger(), "Loaded2 config: %s", config.c_str());
-  // this->config_ = YAML::Load(config);
+  
+  this->config_ = YAML::Load(config);
 
   // if(this->getClient().isConnected())
   // {

@@ -2,6 +2,7 @@
 #define NODE_OPCUA_CLIENT_HPP__
 
 #include <yaml-cpp/yaml.h>
+// #include "opcua_client_core/datatypes.hpp"
 #include "opcua_client_core/node_interface/node_opcua_client_interface.hpp"
 
 namespace ros2_opcua

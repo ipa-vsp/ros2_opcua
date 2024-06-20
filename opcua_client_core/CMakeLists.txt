@@ -66,6 +66,11 @@ target_link_libraries(device_container_node device_container node_opcua_client
 install(DIRECTORY include/ DESTINATION include)
 
 install(
+  DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/launch/
+)
+
+install(
   TARGETS node_opcua_client opcua_client_manager device_container
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib

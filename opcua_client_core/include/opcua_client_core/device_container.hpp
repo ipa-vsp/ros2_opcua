@@ -21,6 +21,8 @@ public:
     cb_group_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     this->declare_parameter("package", "");
     this->declare_parameter("driver", "");
+    this->declare_parameter("dt_config", "");
+    this->declare_parameter("endpoint_url", "");
   }
 
   void init();
@@ -33,6 +35,8 @@ private:
 
   std::string package_;
   std::string driver_;
+  std::string dt_config_;
+  std::string endpoint_url_;
 
   void configure();
   bool load_driver();

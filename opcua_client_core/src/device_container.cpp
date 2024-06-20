@@ -12,6 +12,7 @@ void ros2_opcua::DeviceContainer::init()
 
 void ros2_opcua::DeviceContainer::configure()
 {
+  RCLCPP_INFO(this->get_logger(), "Configuring device containers");
   if (!this->get_parameter("package", package_))
   {
     throw std::runtime_error("Failed to get package name");
@@ -22,17 +23,28 @@ void ros2_opcua::DeviceContainer::configure()
     throw std::runtime_error("Failed to get driver name");
   }
 
-  package_ = "opcua_client_core";
-  driver_ = "ros2_opcua::LifecycleOpcUAClient";
+  if(!this->get_parameter("dt_config", dt_config_))
+  {
+    throw std::runtime_error("Failed to get device type config");
+  }
+
+  if(!this->get_parameter("endpoint_url", endpoint_url_))
+  {
+    throw std::runtime_error("Failed to get endpoint url");
+  }
 
   RCLCPP_INFO(this->get_logger(), "Starting device containers");
+  RCLCPP_INFO(this->get_logger(), "Loaded endpoint url: %s", endpoint_url_.c_str());
   RCLCPP_INFO(this->get_logger(), "Loaded package: %s", package_.c_str());
   RCLCPP_INFO(this->get_logger(), "Loaded driver: %s", driver_.c_str());
+  RCLCPP_INFO(this->get_logger(), "Loaded data types config: %s", dt_config_.c_str());
 }
 
 bool ros2_opcua::DeviceContainer::load_driver()
 {
   std::vector<rclcpp::Parameter> params;
+  params.push_back(rclcpp::Parameter("config", dt_config_));
+  params.push_back(rclcpp::Parameter("endpoint_url", endpoint_url_));
   if (!this->load_components(package_, driver_, params))
   {
     throw std::runtime_error("Failed to load components");
@@ -40,6 +52,7 @@ bool ros2_opcua::DeviceContainer::load_driver()
   }
 
   this->add_node_to_executor(this->opcua_client_->get_node_base_interface());
+  this->opcua_client_->init();
   return true;
 }
 

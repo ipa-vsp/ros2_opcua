@@ -81,9 +81,12 @@ template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::configure()
 {
   RCLCPP_INFO(node_->get_logger(), "Configuring OPC UA Client");
-  // std::config config;
-  // node_->get_parameter("endpoint_url", endpoint_url_);
-  // node_->get_parameter("config", config);
+  std::string config;
+  node_->get_parameter("config", config);
+  node_->get_parameter("endpoint_url", endpoint_url_);
+
+  RCLCPP_INFO(node_->get_logger(), "Loaded2 endpoint url: %s", endpoint_url_.c_str());
+  RCLCPP_INFO(node_->get_logger(), "Loaded2 config: %s", config.c_str());
   // this->config_ = YAML::Load(config);
 
   // if(this->getClient().isConnected())

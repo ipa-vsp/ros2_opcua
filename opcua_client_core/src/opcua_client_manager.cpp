@@ -2,6 +2,7 @@
 
 void ros2_opcua::LifecycleOpcUAClient::init()
 {
+  RCLCPP_INFO(get_logger(), "Initializing LifecycleOpcUAClient");
   node_opcua_client_->init();
 }
 

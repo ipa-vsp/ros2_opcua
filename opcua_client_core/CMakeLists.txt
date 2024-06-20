@@ -24,6 +24,8 @@ set(dependencies
     open62541pp
     open62541pp_vendor)
 
+generate_datatype_headers(datatypes)
+
 # Node OPC-UA Client
 add_library(node_opcua_client SHARED src/node_interface/node_opcua_client.cpp)
 target_include_directories(

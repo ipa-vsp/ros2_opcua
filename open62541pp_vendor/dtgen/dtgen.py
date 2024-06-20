@@ -7,8 +7,8 @@ from ament_index_python import get_package_share_directory
 
 def gen_template_string():
     template = """
-#ifndef {{ header_guard }}
-#define {{ header_guard }}
+#ifndef DATA_TYPES_H_
+#define DATA_TYPES_H_
 
 #include "open62541pp/open62541pp.h"
 #include <cstdint>
@@ -19,9 +19,8 @@ def gen_template_string():
 #include "open62541/types.h"
 #include "open62541/types_generated.h"
 #include "open62541/types_generated_handling.h"
-#include "denso_ua_plc_ros2_control/utilities.hpp"
 
-{% for struct_name, struct_details in data.items() if struct_details.type == 'struct' %}
+{% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
 /**
  * @brief {{ struct_details.description }}
  */
@@ -35,7 +34,7 @@ struct {{ struct_name }}
 const opcua::DataType &get{{ struct_name }}DataType()
 {
     static const opcua::DataType dt =
-        opcua::DataTypeBuilder<{{ struct_name }}>::createStructure("{{ struct_name.upper() }}", {{ struct_details.typeID }}, {{ struct_details.bynaryTypeID }})
+        opcua::DataTypeBuilder<{{ struct_name }}>::createStructure("{{ struct_name }}", {{ struct_details.typeID }}, {{ struct_details.bynaryTypeID }})
             {% for element in struct_details.elements %}
             .addField<&{{ struct_name }}::{{ element.name }}>("{{ element.name }}")
             {% endfor %}
@@ -45,8 +44,18 @@ const opcua::DataType &get{{ struct_name }}DataType()
 
 {% endfor %}
 
+struct NodeIdInfo
+{
+    uint16_t namespaceIndex;
+    uint32_t identifier;
+};
+
+{% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
+NodeIdInfo {{ struct_name }}NodeIdInfo;
+{% endfor %}
+
 namespace opcua {
-    {% for struct_name, struct_details in data.items() if struct_details.type == 'struct' %}
+    {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
     template <>
     struct TypeConverter<{{ struct_name }}>
     {
@@ -62,8 +71,8 @@ namespace opcua {
                 throw std::runtime_error("Invalid encoding type for UA_ExtensionObject");
             }
 
-            nodeIdInfoIN.namespaceIndex = src.content.encoded.typeId.namespaceIndex;
-            nodeIdInfoIN.identifier = src.content.encoded.typeId.identifier.numeric;
+            {{ struct_name }}NodeIdInfo.namespaceIndex = src.content.encoded.typeId.namespaceIndex;
+            {{ struct_name }}NodeIdInfo.identifier = src.content.encoded.typeId.identifier.numeric;
 
             if (src.content.encoded.body.length != sizeof({{ struct_name }}))
             {
@@ -86,13 +95,13 @@ namespace opcua {
             // Set the encoding type
             dst.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
             // Set Type ID (if necessary, example given below)
-            dst.content.encoded.typeId = UA_NODEID_NUMERIC(nodeIdInfoIN.namespaceIndex, nodeIdInfoIN.identifier);
+            dst.content.encoded.typeId = UA_NODEID_NUMERIC({{ struct_name }}NodeIdInfo.namespaceIndex, {{ struct_name }}NodeIdInfo.identifier);
         }
     };
     {% endfor %}
 }
 
-#endif // {{ header_guard }}
+#endif // DATA_TYPES_H_
     """
     return template
 

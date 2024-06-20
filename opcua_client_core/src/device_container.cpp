@@ -2,83 +2,84 @@
 
 void ros2_opcua::DeviceContainer::init()
 {
-    configure();
+  configure();
 
-    if(!this->load_driver())
-    {
-        throw std::runtime_error("Failed to load driver");
-    }
+  if (!this->load_driver())
+  {
+    throw std::runtime_error("Failed to load driver");
+  }
 }
 
 void ros2_opcua::DeviceContainer::configure()
 {
-    if(!this->get_parameter("package", package_))
-    {
-        throw std::runtime_error("Failed to get package name");
-    }
+  if (!this->get_parameter("package", package_))
+  {
+    throw std::runtime_error("Failed to get package name");
+  }
 
-    if(!this->get_parameter("driver", driver_))
-    {
-        throw std::runtime_error("Failed to get driver name");
-    }
+  if (!this->get_parameter("driver", driver_))
+  {
+    throw std::runtime_error("Failed to get driver name");
+  }
 
-    package_ = "opcua_client_core";
-    driver_ = "ros2_opcua::LifecycleOpcUAClient";
+  package_ = "opcua_client_core";
+  driver_ = "ros2_opcua::LifecycleOpcUAClient";
 
-    RCLCPP_INFO(this->get_logger(), "Starting device containers");
-    RCLCPP_INFO(this->get_logger(), "Loaded package: %s", package_.c_str());
-    RCLCPP_INFO(this->get_logger(), "Loaded driver: %s", driver_.c_str());
+  RCLCPP_INFO(this->get_logger(), "Starting device containers");
+  RCLCPP_INFO(this->get_logger(), "Loaded package: %s", package_.c_str());
+  RCLCPP_INFO(this->get_logger(), "Loaded driver: %s", driver_.c_str());
 }
 
 bool ros2_opcua::DeviceContainer::load_driver()
 {
-    std::vector<rclcpp::Parameter> params;
-    if(!this->load_components(package_, driver_, params))
-    {
-        throw std::runtime_error("Failed to load components");
-        return false;
-    }
+  std::vector<rclcpp::Parameter> params;
+  if (!this->load_components(package_, driver_, params))
+  {
+    throw std::runtime_error("Failed to load components");
+    return false;
+  }
 
-    this->add_node_to_executor(this->opcua_client_->get_node_base_interface());
-    return true;
+  this->add_node_to_executor(this->opcua_client_->get_node_base_interface());
+  return true;
 }
 
-bool ros2_opcua::DeviceContainer::load_components(std::string &package_name, std::string &driver_name, std::vector<rclcpp::Parameter> &params)
+bool ros2_opcua::DeviceContainer::load_components(std::string& package_name, std::string& driver_name,
+                                                  std::vector<rclcpp::Parameter>& params)
 {
-    RCLCPP_INFO(this->get_logger(), "Loading components from package: %s", package_name.c_str());
-    RCLCPP_INFO(this->get_logger(), "Loading driver: %s", driver_name.c_str());
+  RCLCPP_INFO(this->get_logger(), "Loading components from package: %s", package_name.c_str());
+  RCLCPP_INFO(this->get_logger(), "Loading driver: %s", driver_name.c_str());
 
-    std::string node_name = "opcua_client_node";
-    std::string resource_index("rclcpp_components");
-    std::vector<ComponentResource> components = this->get_component_resources(package_name, resource_index);
+  std::string node_name = "opcua_client_node";
+  std::string resource_index("rclcpp_components");
+  std::vector<ComponentResource> components = this->get_component_resources(package_name, resource_index);
 
-    for(auto it = components.begin(); it != components.end(); it++)
+  for (auto it = components.begin(); it != components.end(); it++)
+  {
+    if (it->first.compare(driver_name) == 0)
     {
-        if(it->first.compare(driver_name) == 0)
-        {
-            std::shared_ptr<rclcpp_components::NodeFactory> factory = this->create_component_factory(*it);
-            rclcpp::NodeOptions options;
-            options.use_global_arguments(false);
-            options.use_intra_process_comms(true);
-            std::vector<std::string> remap_rules;
-            remap_rules.push_back("--ros-args");
-            remap_rules.push_back("-r");
-            remap_rules.push_back("__node:=" + node_name);
-            options.arguments(remap_rules);
-            options.parameter_overrides(params);
+      std::shared_ptr<rclcpp_components::NodeFactory> factory = this->create_component_factory(*it);
+      rclcpp::NodeOptions options;
+      options.use_global_arguments(false);
+      options.use_intra_process_comms(true);
+      std::vector<std::string> remap_rules;
+      remap_rules.push_back("--ros-args");
+      remap_rules.push_back("-r");
+      remap_rules.push_back("__node:=" + node_name);
+      options.arguments(remap_rules);
+      options.parameter_overrides(params);
 
-            try
-            {
-                auto wrapper = factory->create_node_instance(options);
-                this->opcua_client_ = std::static_pointer_cast<ros2_opcua::OpcUAClientInterface>(wrapper.get_node_instance());
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-                return false;
-            }
-            return true;
-        }
+      try
+      {
+        auto wrapper = factory->create_node_instance(options);
+        this->opcua_client_ = std::static_pointer_cast<ros2_opcua::OpcUAClientInterface>(wrapper.get_node_instance());
+      }
+      catch (const std::exception& e)
+      {
+        std::cerr << e.what() << '\n';
+        return false;
+      }
+      return true;
     }
-    return false;
+  }
+  return false;
 }

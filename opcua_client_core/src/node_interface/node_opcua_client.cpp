@@ -1,5 +1,6 @@
 #include "opcua_client_core/node_interface/node_opcua_client.hpp"
 #include <memory> // Add this line
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 
 template <class NODETYPE>
 bool ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::createClient()
@@ -36,7 +37,7 @@ template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::createMonitoredItems()
 {
     std::unique_lock<std::shared_mutex> lock(opcua_client_mutex_);
-    opcua_client_->createMonitoredItems();
+    // opcua_client_->createMonitoredItems();
 }
 
 template <class NODETYPE>
@@ -57,14 +58,14 @@ template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::browse()
 {
     std::shared_lock<std::shared_mutex> lock(opcua_rw_mutex_);
-    opcua_client_->browse();
+    // opcua_client_->browse();
 }
 
 template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::callMethod()
 {
     std::shared_lock<std::shared_mutex> lock(opcua_rw_mutex_);
-    opcua_client_->callMethod();
+    // opcua_client_->callMethod();
 }
 
 template <class NODETYPE>
@@ -79,51 +80,53 @@ template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::configure()
 {
     RCLCPP_INFO(node_->get_logger(), "Configuring OPC UA Client");
-    std::config config;
-    node_->get_parameter("endpoint_url", endpoint_url_);
-    node_->get_parameter("config", config);
-    this->config_ = YAML::Load(config);
+    // std::config config;
+    // node_->get_parameter("endpoint_url", endpoint_url_);
+    // node_->get_parameter("config", config);
+    // this->config_ = YAML::Load(config);
 
-    if(this->getClient().isConnected())
-    {
-        this->getClient().disconnect();
-    }
-    createClient();
+    // if(this->getClient().isConnected())
+    // {
+    //     this->getClient().disconnect();
+    // }
+    // createClient();
 }
 
 template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::activate()
 {
     RCLCPP_INFO(node_->get_logger(), "Activating OPC UA Client");
-    connectClient(endpoint_url_);
-    createSubscription();
-    createMonitoredItems();
+    // connectClient(endpoint_url_);
+    // createSubscription();
+    // createMonitoredItems();
 }
 
 template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::deactivate()
 {
     RCLCPP_INFO(node_->get_logger(), "Deactivating OPC UA Client");
-    disconnectClient();
+    // disconnectClient();
 }
 
 template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::cleanup()
 {
     RCLCPP_INFO(node_->get_logger(), "Cleaning up OPC UA Client");
-    if(this->getClient().isConnected())
-    {
-        this->getClient().disconnect();
-    }
-    opcua_client_.reset();
+//     if(this->getClient().isConnected())
+//     {
+//         this->getClient().disconnect();
+//     }
+//     opcua_client_.reset();
 }
 
 template <class NODETYPE>
 void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::shutdown()
 {
     RCLCPP_INFO(node_->get_logger(), "Shutting down OPC UA Client");
-    if(this->getClient().isConnected())
-    {
-        this->getClient().disconnect();
-    }
+    // if(this->getClient().isConnected())
+    // {
+    //     this->getClient().disconnect();
+    // }
 }
+
+template class ros2_opcua::node_interface::NodeOpcUAClient<rclcpp_lifecycle::LifecycleNode>;

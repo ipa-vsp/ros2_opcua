@@ -17,10 +17,13 @@ void ros2_opcua::DeviceContainer::configure()
         throw std::runtime_error("Failed to get package name");
     }
 
-    if(!this->get_parameter("driver", driver_));
+    if(!this->get_parameter("driver", driver_))
     {
         throw std::runtime_error("Failed to get driver name");
     }
+
+    package_ = "opcua_client_core";
+    driver_ = "ros2_opcua::LifecycleOpcUAClient";
 
     RCLCPP_INFO(this->get_logger(), "Starting device containers");
     RCLCPP_INFO(this->get_logger(), "Loaded package: %s", package_.c_str());
@@ -67,7 +70,7 @@ bool ros2_opcua::DeviceContainer::load_components(std::string &package_name, std
             try
             {
                 auto wrapper = factory->create_node_instance(options);
-                this->opcua_client_ = std::static_pointer_cast<ros2_opcua::OpcUAClientInterface>(wrapper.get_node_base_interface());
+                this->opcua_client_ = std::static_pointer_cast<ros2_opcua::OpcUAClientInterface>(wrapper.get_node_instance());
             }
             catch(const std::exception& e)
             {

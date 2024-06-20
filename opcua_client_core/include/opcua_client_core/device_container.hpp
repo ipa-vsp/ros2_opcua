@@ -5,7 +5,7 @@
 #include <rclcpp/executors.hpp>
 #include <rclcpp_components/component_manager.hpp>
 
-#include "opcua_client_core/opcua_client.hpp"
+#include "opcua_client_core/opcua_client_manager.hpp"
 
 namespace ros2_opcua
 {

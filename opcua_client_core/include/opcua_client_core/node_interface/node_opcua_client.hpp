@@ -17,12 +17,12 @@ namespace ros2_opcua
                 node_ = node;
             }
 
-            void init() override;
-            void configure() override;
-            void activate() override;
-            void deactivate() override;
-            void cleanup() override;
-            void shutdown() override;
+            void init();
+            void configure();
+            void activate();
+            void deactivate();
+            void cleanup();
+            void shutdown();
 
             opcua::Client &getClient() { return *opcua_client_;}
 

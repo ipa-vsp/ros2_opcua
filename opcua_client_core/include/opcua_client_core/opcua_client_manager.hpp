@@ -10,15 +10,15 @@ namespace ros2_opcua
     class OpcUAClientInterface
     {
     public:
-        OpcUAClientInterface() = default;
-        virtual ~OpcUAClientInterface() = default;
+        // OpcUAClientInterface() = default;
+        // virtual ~OpcUAClientInterface() = default;
 
         virtual void init() = 0;
-        virtual void configure() = 0;
-        virtual void activate() = 0;
-        virtual void deactivate() = 0;
-        virtual void cleanup() = 0;
-        virtual void shutdown() = 0;
+        // virtual void configure() = 0;
+        // virtual void activate() = 0;
+        // virtual void deactivate() = 0;
+        // virtual void cleanup() = 0;
+        // virtual void shutdown() = 0;
 
         virtual rclcpp::node_interfaces::NodeBaseInterface::SharedPtr get_node_base_interface() = 0;
     };

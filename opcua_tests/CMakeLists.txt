@@ -23,14 +23,14 @@ target_include_directories(
          $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(example_server_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-add_executable(example_client_node src/example_client_node.cpp)
-target_include_directories(
-  example_client_node
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-         $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(example_client_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+# add_executable(example_client_node src/example_client_node.cpp)
+# target_include_directories(
+#   example_client_node
+#   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#          $<INSTALL_INTERFACE:include>)
+# ament_target_dependencies(example_client_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-install(TARGETS example_server_node example_client_node
+install(TARGETS example_server_node # example_client_node
         DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY include/ DESTINATION include/)

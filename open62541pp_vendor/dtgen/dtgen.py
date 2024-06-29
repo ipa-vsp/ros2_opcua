@@ -1,8 +1,8 @@
 import sys
 import yaml
 import jinja2
-import os
-from ament_index_python import get_package_share_directory
+# import os
+# from ament_index_python import get_package_share_directory
 
 
 def gen_template_string():
@@ -108,7 +108,7 @@ namespace opcua {
 
 def generate_header(yaml_path, output_dir):
     # Load YAML file
-    with open(yaml_path, "r") as file:
+    with open(yaml_path) as file:
         data = yaml.safe_load(file)
 
     # Define the inline Jinja2 template

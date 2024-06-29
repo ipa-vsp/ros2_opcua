@@ -6,31 +6,30 @@ import launch.events
 import launch_ros
 import launch_ros.events
 import launch_ros.events.lifecycle
-from launch.substitutions import LaunchConfiguration, PythonExpression, TextSubstitution
+from launch.substitutions import LaunchConfiguration, TextSubstitution
 from launch.actions import DeclareLaunchArgument
-import lifecycle_msgs.msg
 from ament_index_python import get_package_share_directory
 
 def generate_launch_description():
-    
+
     package_name = DeclareLaunchArgument(
         "package_name",
         default_value=TextSubstitution(text="opcua_client_core"),
         description="Name of the package.",
     )
-    
+
     driver_name = DeclareLaunchArgument(
         "driver_name",
         default_value=TextSubstitution(text="ros2_opcua::LifecycleOpcUAClient"),
         description="Name of the driver.",
     )
-    
+
     endpoint_url = DeclareLaunchArgument(
         "endpoint_url",
         default_value=TextSubstitution(text="opc.tcp://localhost:4840"),
         description="URL of the OPC UA server.",
     )
-    
+
     dt_config_arg = DeclareLaunchArgument(
         "dt_config",
         default_value=TextSubstitution(text=os.path.join(get_package_share_directory("opcua_client_core"), "config", "datatypes.yaml")),

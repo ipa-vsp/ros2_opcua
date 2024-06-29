@@ -66,9 +66,9 @@ target_link_libraries(device_container_node device_container node_opcua_client
 
 install(DIRECTORY include/ DESTINATION include)
 
-install(
-  DIRECTORY launch/
-  DESTINATION share/${PROJECT_NAME}/launch/
+install(DIRECTORY
+  launch config
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(

@@ -52,6 +52,8 @@ template <class NODETYPE> class NodeOpcUAClient : public NodeOpcUAClientInterfac
     mutable std::shared_mutex opcua_rw_mutex_;
 
     YAML::Node config_;
+
+    std::vector<variableInfo> variables_;  
 };
 } // namespace node_interface
 } // namespace ros2_opcua

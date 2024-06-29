@@ -80,13 +80,28 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
     RCLCPP_INFO(node_->get_logger(), "Loaded2 endpoint url: %s", endpoint_url_.c_str());
     RCLCPP_INFO(node_->get_logger(), "Loaded2 config: %s", config.c_str());
 
-    this->config_ = YAML::Load(config);
+    try {
+        this->config_ = YAML::LoadFile(config);
 
-    // if(this->getClient().isConnected())
-    // {
-    //     this->getClient().disconnect();
-    // }
-    // createClient();
+        if(this->config_.IsNull()) {
+            RCLCPP_ERROR(node_->get_logger(), "No config found");
+            return;
+        }
+
+        if (!this->config_.IsMap()) {
+            RCLCPP_ERROR(node_->get_logger(), "Config is not a map. Please check the YAML structure.");
+            return;
+        }
+
+        if (this->config_["endpoint_url"]) {
+            auto endpoint = this->config_["endpoint_url"].as<std::string>();
+            RCLCPP_INFO(node_->get_logger(), "Loaded endpoint: %s", endpoint.c_str());
+        } else {
+            RCLCPP_ERROR(node_->get_logger(), "The 'endpoint_url' key is missing in the YAML configuration.");
+        }
+    } catch (const YAML::Exception& e) {
+        RCLCPP_ERROR(node_->get_logger(), "Exception parsing YAML config: %s", e.what());
+    }
 }
 
 template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::activate()
@@ -95,6 +110,50 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
     // connectClient(endpoint_url_);
     // createSubscription();
     // createMonitoredItems();
+
+    YAML::Node variables = this->config_["variables"];
+    if (variables.IsNull())
+    {
+        RCLCPP_ERROR(node_->get_logger(), "No variables found in config");
+        return;
+    }
+    for (YAML::const_iterator it = variables.begin(); it != variables.end(); ++it)
+    {
+        variableInfo variable_info;
+        variable_info.name = it->first.as<std::string>();
+        YAML::Node variable = it->second;
+
+        variable_info.index = variable["index"].as<uint8_t>();
+        variable_info.type = variable["type"].as<std::string>();
+        variable_info.typeID = variable["typeID"].as<std::string>();
+        variable_info.bynaryTypeID = variable["bynaryTypeID"].as<std::string>();
+
+        std::string description = variable["description"].as<std::string>();
+
+        RCLCPP_INFO(node_->get_logger(), "Activating variable '%s', description '%s' ", variable_info.name.c_str(), description.c_str());
+        RCLCPP_INFO(node_->get_logger(), "Index: %d, Type: %s, TypeID: %s, BynaryTypeID: %s", variable_info.index, variable_info.type.c_str(), variable_info.typeID.c_str(), variable_info.bynaryTypeID.c_str());
+
+        if(variable_info.type == "struct")
+        {
+            RCLCPP_INFO(node_->get_logger(), "Struct type");
+            YAML::Node elements = variable["elements"];
+            if(elements.IsNull())
+            {
+                RCLCPP_ERROR(node_->get_logger(), "No elements found in struct");
+                return;
+            }
+            for (YAML::const_iterator it = elements.begin(); it != elements.end(); ++it)
+            {
+                RCLCPP_INFO(node_->get_logger(), "Element: %s, Type: %s", it->first.as<std::string>().c_str(), it->second.as<std::string>().c_str());
+                std::map<std::string, std::string> element;
+                element["name"] = it->first.as<std::string>();
+                element["type"] = it->second.as<std::string>();
+                variable_info.elements.push_back(element);
+                RCLCPP_INFO(node_->get_logger(), "Element: %s, Type: %s", element["name"].c_str(), element["type"].c_str());
+            }
+        }
+        variables_.push_back(variable_info);
+    }
 }
 
 template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::deactivate()

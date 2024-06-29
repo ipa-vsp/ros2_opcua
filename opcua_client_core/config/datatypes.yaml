@@ -36,11 +36,20 @@ variables:
   variable3:
     description: "This is a description"
     type: int
+    index: 1
+    typeID: "{1, 4}"
+    bynaryTypeID: "{1, 4745}"
 
   variable4:
     description: "This is a description"
     type: bool
+    index: 1
+    typeID: "{1, 5}"
+    bynaryTypeID: "{1, 4846}"
 
   variable5:
     description: "This is a description"
     type: string
+    index: 1
+    typeID: "{1, 6}"
+    bynaryTypeID: "{1, 4947}"

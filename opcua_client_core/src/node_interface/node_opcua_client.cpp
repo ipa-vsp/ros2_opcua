@@ -110,59 +110,8 @@ void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::activate() {
     // connectClient(endpoint_url_);
     // createSubscription();
     // createMonitoredItems();
-
-    YAML::Node variables = this->config_["variables"];
-    if (variables.IsNull()) {
-        RCLCPP_ERROR(node_->get_logger(), "No variables found in config");
-        return;
-    }
-
-    for (YAML::const_iterator it = variables.begin(); it != variables.end(); ++it) 
-    {
-        variableInfo variable_info;
-        variable_info.name = it->first.as<std::string>();
-        YAML::Node variable = it->second;
-
-        try {
-            variable_info.index = variable["index"].as<uint8_t>();
-            variable_info.type = variable["type"].as<std::string>();
-            variable_info.typeID = variable["typeID"].as<std::string>();
-            variable_info.bynaryTypeID = variable["bynaryTypeID"].as<std::string>();
-            std::string description = variable["description"].as<std::string>();
-
-            if (variable_info.type == "struct") {
-                RCLCPP_INFO(node_->get_logger(), "Struct type");
-                try {
-                    YAML::Node elements = variable["elements"];
-                    if (elements.IsNull()) {
-                        RCLCPP_ERROR(node_->get_logger(), "No elements found in struct");
-                        return;
-                    }
-                    if (!elements.IsSequence()) { // Changed to IsSequence to match YAML structure
-                        RCLCPP_ERROR(node_->get_logger(), "Elements is not a sequence. Please check the YAML structure.");
-                        return;
-                    }
-
-                    for (YAML::const_iterator elem_it = elements.begin(); elem_it != elements.end(); ++elem_it) {
-                        auto element_map = *elem_it;
-                        std::string element_name = element_map["name"].as<std::string>();
-                        std::string element_type = element_map["type"].as<std::string>();
-
-                        std::map<std::string, std::string> element;
-                        element["name"] = element_name;
-                        element["type"] = element_type;
-                        variable_info.elements.push_back(element);
-                    }
-                } catch (const YAML::Exception& e) {
-                    RCLCPP_ERROR(node_->get_logger(), "Exception parsing YAML elements: %s", e.what());
-                }
-            }
-            variables_.push_back(variable_info);
-        } catch (const YAML::Exception& e) {
-            RCLCPP_ERROR(node_->get_logger(), "Exception parsing YAML variable: %s", e.what());
-        }
-    }
-
+    loadVariables(config_);
+    updateVariables();
     // todo: update the variables in the OPC UA client
 }
 
@@ -189,6 +138,92 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
     // {
     //     this->getClient().disconnect();
     // }
+}
+
+template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::loadVariables(const YAML::Node &config)
+{
+    YAML::Node variables = config["variables"];
+
+    if (variables.IsNull()) {
+        RCLCPP_ERROR(node_->get_logger(), "No variables found in config");
+        return;
+    }
+
+    if (!variables.IsMap()) {
+        RCLCPP_ERROR(node_->get_logger(), "Variables is not a map. Please check the YAML structure.");
+        return;
+    }
+
+    for (YAML::const_iterator it = variables.begin(); it != variables.end(); ++it) 
+    {
+        variableInfo variable_info;
+        variable_info.name = it->first.as<std::string>();
+        YAML::Node variable = it->second;
+
+        try {
+            variable_info.index = variable["index"].as<uint8_t>();
+            variable_info.type = variable["type"].as<std::string>();
+            variable_info.typeID = variable["typeID"].as<std::string>();
+            variable_info.bynaryTypeID = variable["bynaryTypeID"].as<std::string>();
+            std::string description = variable["description"].as<std::string>();
+
+            if (variable_info.type == "struct") 
+            {
+                try {
+                    YAML::Node elements = variable["elements"];
+                    if (elements.IsNull()) {
+                        RCLCPP_ERROR(node_->get_logger(), "[on_activate] No elements found in struct");
+                        return;
+                    }
+                    if (!elements.IsSequence()) { // Changed to IsSequence to match YAML structure
+                        RCLCPP_ERROR(node_->get_logger(), "[on_activate] Elements is not a sequence. Please check the YAML structure.");
+                        return;
+                    }
+
+                    for (YAML::const_iterator elem_it = elements.begin(); elem_it != elements.end(); ++elem_it) {
+                        auto element_map = *elem_it;
+                        std::string element_name = element_map["name"].as<std::string>();
+                        std::string element_type = element_map["type"].as<std::string>();
+
+                        std::map<std::string, std::string> element;
+                        element["name"] = element_name;
+                        element["type"] = element_type;
+                        variable_info.elements.push_back(element);
+                    }
+                } catch (const YAML::Exception& e) {
+                    RCLCPP_ERROR(node_->get_logger(), "[on_activate] Exception parsing YAML elements: %s", e.what());
+                }
+                RCLCPP_INFO(node_->get_logger(), "[on_activate] Loaded Variable: %s with elements", variable_info.name.c_str());
+            }
+            else
+            {
+                std::map<std::string, std::string> element;
+                element["name"] = "";
+                element["type"] = "";
+                variable_info.elements.push_back(element);
+                RCLCPP_INFO(node_->get_logger(), "[on_activate] Loaded Variable: %s, without elements", variable_info.name.c_str());
+            }
+            variables_.push_back(variable_info);
+        } catch (const YAML::Exception& e) {
+            RCLCPP_ERROR(node_->get_logger(), "[on_activate] Exception parsing YAML variable: %s", e.what());
+        }
+    }
+}
+
+template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::updateVariables()
+{
+    for (auto variable : variables_) 
+    {
+        auto out = opcua_client_->getNode({variable.index, variable.name}).readValue();
+        if(!out.isEmpty())
+        {
+            RCLCPP_INFO(node_->get_logger(), "[on_activate] Variable %s: %s", variable.name.c_str(), data.value().c_str());
+        }
+        else
+        {
+            RCLCPP_ERROR(node_->get_logger(), "[on_activate] Variable %s: No value", variable.name.c_str());
+        }
+    }
 }
 
 template class ros2_opcua::node_interface::NodeOpcUAClient<rclcpp_lifecycle::LifecycleNode>;

@@ -21,18 +21,10 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE)
 
 # # # Set the CMake arguments for the library
-set(UAPP_BUILD_EXAMPLES
-    ON
-    CACHE BOOL "Build examples for open62541pp")
-set(UAPP_BUILD_TESTS
-    ON
-    CACHE BOOL "Build tests for open62541pp")
-set(CMAKE_BUILD_TYPE
-    Debug
-    CACHE STRING "Set the build type")
-set(BUILD_SHARED_LIBS
-    ON
-    CACHE BOOL "Build shared libraries")
+set(UAPP_BUILD_EXAMPLES ON CACHE BOOL "Build examples for open62541pp")
+set(UAPP_BUILD_TESTS ON CACHE BOOL "Build tests for open62541pp")
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type")
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
 set(UA_ENABLE_ENCRYPTION OPENSSL)
 # set(UA_ENABLE_ENCRYPTION STREQUAL "OPENSSL")
 

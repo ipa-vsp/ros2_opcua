@@ -1,4 +1,4 @@
-variables: 
+variables:
   variable1:
     description: "This is a description"
     type: struct
@@ -16,11 +16,11 @@ variables:
     elements:
       - { type: int, name: name } # datatype and names
       - { type: bool, name: name1 }
-  
+
   variable3:
     description: "This is a description"
     type: int
-  
+
   variable4:
     description: "This is a description"
     type: bool

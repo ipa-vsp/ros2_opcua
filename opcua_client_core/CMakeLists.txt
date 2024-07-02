@@ -33,6 +33,7 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
          $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(node_opcua_client ${dependencies})
+target_link_libraries(node_opcua_client yaml-cpp)
 
 # OPC-UA Client Manager Component
 add_library(opcua_client_manager SHARED src/opcua_client_manager.cpp)
@@ -41,7 +42,7 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
          $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(opcua_client_manager ${dependencies})
-target_link_libraries(opcua_client_manager node_opcua_client)
+target_link_libraries(opcua_client_manager node_opcua_client yaml-cpp)
 
 rclcpp_components_register_nodes(opcua_client_manager
                                  "ros2_opcua::LifecycleOpcUAClient")
@@ -64,6 +65,11 @@ target_link_libraries(device_container_node device_container node_opcua_client
                       opcua_client_manager)
 
 install(DIRECTORY include/ DESTINATION include)
+
+install(DIRECTORY
+  launch config
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(
   TARGETS node_opcua_client opcua_client_manager device_container

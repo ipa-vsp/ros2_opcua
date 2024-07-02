@@ -2,7 +2,8 @@ macro(generate_datatype_headers TARGET)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
   set(YAML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/config/${TARGET}.yaml")
-  set(OUTPUT_PATH "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp")
+  # set(OUTPUT_PATH "${CMAKE_BINARY_DIR}/include/${TARGET}.hpp") ## Todo
+  set(OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/${TARGET}.hpp")
   set(TEMPLATE_DIR "${CMAKE_INSTALL_PREFIX}/bin/templates")
 
   message("Generating datatype headers for ${TARGET}...")
@@ -13,8 +14,8 @@ macro(generate_datatype_headers TARGET)
   # Prepare target directories
   add_custom_target(
     ${TARGET}_prepare ALL
-    COMMAND ${CMAKE_COMMAND} -E rm -f ${OUTPUT_PATH}
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include
+    # COMMAND ${CMAKE_COMMAND} -E rm -f ${OUTPUT_PATH}
+    # COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include
     COMMENT "Preparing target directories")
 
   # Main target to generate headers
@@ -29,7 +30,9 @@ macro(generate_datatype_headers TARGET)
     DEPENDS ${OUTPUT_PATH}
     COMMENT "Building header file")
 
-  # Installation rule
-  install(FILES ${OUTPUT_PATH}
-          DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+  # Installation rule (todo)
+  # install(FILES ${OUTPUT_PATH}
+  #         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+  # install(FILES ${OUTPUT_PATH}
+  #         DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME})
 endmacro()

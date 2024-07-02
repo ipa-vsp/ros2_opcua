@@ -1,8 +1,8 @@
 import sys
 import yaml
 import jinja2
-import os
-from ament_index_python import get_package_share_directory
+# import os
+# from ament_index_python import get_package_share_directory
 
 
 def gen_template_string():
@@ -13,6 +13,8 @@ def gen_template_string():
 #include "open62541pp/open62541pp.h"
 #include <cstdint>
 #include <iostream>
+
+#include "opcua_client_core/type_registry.hpp"
 
 // Additional includes
 #include "open62541/client_config_default.h"
@@ -50,9 +52,18 @@ struct NodeIdInfo
     uint32_t identifier;
 };
 
+TypeRegistry struct_type_registry;
+
 {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
 NodeIdInfo {{ struct_name }}NodeIdInfo;
 {% endfor %}
+
+void registerTypes()
+{
+    {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
+    struct_type_registry.registerType<{{ struct_name }}>("{{ struct_name}}");
+    {% endfor %}
+}
 
 namespace opcua {
     {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
@@ -108,7 +119,7 @@ namespace opcua {
 
 def generate_header(yaml_path, output_dir):
     # Load YAML file
-    with open(yaml_path, "r") as file:
+    with open(yaml_path) as file:
         data = yaml.safe_load(file)
 
     # Define the inline Jinja2 template

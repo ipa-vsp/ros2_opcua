@@ -14,6 +14,8 @@ def gen_template_string():
 #include <cstdint>
 #include <iostream>
 
+#include "opcua_client_core/type_registry.hpp"
+
 // Additional includes
 #include "open62541/client_config_default.h"
 #include "open62541/types.h"
@@ -50,9 +52,18 @@ struct NodeIdInfo
     uint32_t identifier;
 };
 
+TypeRegistry struct_type_registry;
+
 {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
 NodeIdInfo {{ struct_name }}NodeIdInfo;
 {% endfor %}
+
+void registerTypes()
+{
+    {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}
+    struct_type_registry.registerType<{{ struct_name }}>("{{ struct_name}}");
+    {% endfor %}
+}
 
 namespace opcua {
     {% for struct_name, struct_details in data.variables.items() if struct_details.type == 'struct' %}

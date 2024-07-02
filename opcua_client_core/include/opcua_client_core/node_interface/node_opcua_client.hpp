@@ -1,9 +1,10 @@
 #ifndef NODE_OPCUA_CLIENT_HPP__
 #define NODE_OPCUA_CLIENT_HPP__
 
-#include <yaml-cpp/yaml.h>
 #include "opcua_client_core/datatypes.hpp"
 #include "opcua_client_core/node_interface/node_opcua_client_interface.hpp"
+#include "opcua_client_core/type_registry.hpp"
+#include <yaml-cpp/yaml.h>
 
 namespace ros2_opcua
 {
@@ -53,7 +54,8 @@ template <class NODETYPE> class NodeOpcUAClient : public NodeOpcUAClientInterfac
 
     YAML::Node config_;
 
-    std::vector<variableInfo> variables_;  
+    std::vector<variableInfo> variables_;
+
   private:
     void loadVariables(const YAML::Node &config);
     void updateVariables();

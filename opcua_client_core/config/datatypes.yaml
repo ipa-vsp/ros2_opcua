@@ -1,4 +1,4 @@
-endpoint_url: "opc.tcp://localhost:4840"
+# endpoint_url: "opc.tcp://localhost:4840"
 variables:
   Point:
     description: "This is a description"
@@ -53,3 +53,10 @@ variables:
     index: 1
     typeID: "{1, 6}"
     bynaryTypeID: "{1, 4947}"
+
+  variable6:
+    description: "This is a description"
+    type: float
+    index: 1
+    typeID: "{1, 7}"
+    bynaryTypeID: "{1, 5048}"

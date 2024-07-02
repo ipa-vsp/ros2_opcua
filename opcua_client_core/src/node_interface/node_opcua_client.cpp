@@ -68,17 +68,22 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
     RCLCPP_INFO(node_->get_logger(), "Initializing OPC UA Client");
     node_->declare_parameter("endpoint_url", "");
     node_->declare_parameter("config", "");
+
+    RCLCPP_INFO(node_->get_logger(), "Creating OPC UA Client");
+    this->createClient();
 }
 
 template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODETYPE>::configure()
 {
-    RCLCPP_INFO(node_->get_logger(), "Configuring OPC UA Client");
+    RCLCPP_INFO(node_->get_logger(), "[on_configure] Configuring OPC UA Client");
     std::string config;
     node_->get_parameter("config", config);
     node_->get_parameter("endpoint_url", endpoint_url_);
 
-    RCLCPP_INFO(node_->get_logger(), "Loaded2 endpoint url: %s", endpoint_url_.c_str());
-    RCLCPP_INFO(node_->get_logger(), "Loaded2 config: %s", config.c_str());
+    RCLCPP_INFO(node_->get_logger(), "[on_configure] Found endpoint url: %s", endpoint_url_.c_str());
+    RCLCPP_INFO(node_->get_logger(), "[on_configure] config file path: %s", config.c_str());
+
+    this->connectClient(endpoint_url_);
 
     try
     {
@@ -94,16 +99,6 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
         {
             RCLCPP_ERROR(node_->get_logger(), "Config is not a map. Please check the YAML structure.");
             return;
-        }
-
-        if (this->config_["endpoint_url"])
-        {
-            auto endpoint = this->config_["endpoint_url"].as<std::string>();
-            RCLCPP_INFO(node_->get_logger(), "Loaded endpoint: %s", endpoint.c_str());
-        }
-        else
-        {
-            RCLCPP_ERROR(node_->get_logger(), "The 'endpoint_url' key is missing in the YAML configuration.");
         }
     }
     catch (const YAML::Exception &e)
@@ -244,11 +239,24 @@ template <class NODETYPE> void ros2_opcua::node_interface::NodeOpcUAClient<NODET
     {
         if (variable.type == "struct")
         {
-            // auto out = opcua_client_->getNode({variable.index, variable.name}).readValue();
-            using Type = decltype(struct_type_registry.getType<void>(variable.name));
-            RCLCPP_INFO(node_->get_logger(), "Variable %s has type %s", variable.name.c_str(),
-                        struct_type_registry.getType<Type>(variable.name).name());
-            // auto data = out.getScalarCopy<Type>();
+            auto out = opcua_client_->getNode({variable.index, variable.name}).readValue();
+            const std::type_info &typeInfo = struct_type_registry.getType(variable.name);
+            RCLCPP_INFO(node_->get_logger(), "Variable %s has type %s", variable.name.c_str(), typeInfo.name());
+
+            try
+            {
+                std::any any_out(out);
+                auto data = struct_type_registry.dispatchType(variable.name, any_out);
+                if (variable.name == "Point")
+                {
+                    RCLCPP_INFO(node_->get_logger(), "Point x: %f, y: %f, z: %f", std::any_cast<Point>(data).x,
+                                std::any_cast<Point>(data).y, std::any_cast<Point>(data).z);
+                }
+            }
+            catch (const std::exception &e)
+            {
+                RCLCPP_ERROR(node_->get_logger(), "Exception updating variable: %s", e.what());
+            }
         }
     }
 }

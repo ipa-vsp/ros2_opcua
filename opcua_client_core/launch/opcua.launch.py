@@ -26,7 +26,7 @@ def generate_launch_description():
 
     endpoint_url = DeclareLaunchArgument(
         "endpoint_url",
-        default_value=TextSubstitution(text="opc.tcp://localhost:4840"),
+        default_value=TextSubstitution(text="opc.tcp://192.168.50.2:4840"),
         description="URL of the OPC UA server.",
     )
 

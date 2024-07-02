@@ -26,7 +26,7 @@ template <class NODETYPE> class NodeOpcUAClient : public NodeOpcUAClientInterfac
     NodeOpcUAClient(NODETYPE *node) { node_ = node; }
 
     void init();
-    void configure();
+    void configure(); // Todo Change return type to lifecyle callback or bool
     void activate();
     void deactivate();
     void cleanup();

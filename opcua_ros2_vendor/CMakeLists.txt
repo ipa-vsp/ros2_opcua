@@ -11,7 +11,7 @@ find_package(OpenSSL REQUIRED)
 
 ament_vendor(opcua_ros2_vendor
   VCS_URL      https://github.com/open62541pp/open62541pp.git
-  VCS_VERSION  6b83f185e0fbc78f98647ff4afd848b8a17cbc60
+  VCS_VERSION  4bc85304897d3fd23bb76954b08380d06b555bc3
   CMAKE_ARGS
     -DUAPP_BUILD_EXAMPLES:BOOL=OFF
     -DUAPP_BUILD_TESTS:BOOL=OFF
@@ -54,7 +54,7 @@ if(BUILD_TESTING)
         ${CMAKE_INSTALL_PREFIX}/include)
       target_link_directories(smoke_test PRIVATE
         ${CMAKE_INSTALL_PREFIX}/lib)
-      target_link_libraries(smoke_test PRIVATE open62541pp open62541)
+      target_link_libraries(smoke_test open62541pp open62541)
     endif()
   endif()
 endif()

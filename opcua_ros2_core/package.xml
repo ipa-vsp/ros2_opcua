@@ -3,14 +3,23 @@
 <package format="3">
   <name>opcua_ros2_core</name>
   <version>0.1.0</version>
-  <description>Core C++ library: OPC UA client/server, variant conversion, subscriptions.</description>
+  <description>Core C++ library: OPC UA client/server wrappers, variant conversion, subscriptions, lifecycle base node.</description>
   <maintainer email="prachandabhanu@gmail.com">Vishnuprasad Prachandabhanu</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>lifecycle_msgs</depend>
+  <depend>opcua_ros2_vendor</depend>
+  <depend>opcua_ros2_interfaces</depend>
+  <depend>builtin_interfaces</depend>
+  <depend>unique_identifier_msgs</depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

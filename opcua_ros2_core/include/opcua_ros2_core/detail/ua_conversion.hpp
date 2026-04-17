@@ -1,5 +1,16 @@
 // Copyright 2024 Vishnuprasad Prachandabhanu
-// SPDX-License-Identifier: Apache-2.0
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 // Internal header — allowed to include open62541pp headers.
 // Never include from public (non-detail) headers.
 #pragma once
@@ -80,7 +91,7 @@ inline NodeId to_core(const opcua::NodeId & id)
 // --- Variant ---
 inline Variant to_core_variant(const opcua::Variant & v)
 {
-  if (v.empty()) {return {}}
+  if (v.empty()) {return {};}
   if (v.isScalar()) {
     if (v.isType<UA_Boolean>()) {return Variant::make_bool(*static_cast<const bool *>(v.data()));}
     if (v.isType<UA_SByte>()) {return Variant::make_int8(*static_cast<const int8_t *>(v.data()));}
@@ -138,7 +149,7 @@ inline Variant to_core_variant(const opcua::Variant & v)
 
 inline opcua::Variant to_ua_variant(const Variant & v)
 {
-  if (v.is_null()) {return {}}
+  if (v.is_null()) {return {};}
   if (v.is_scalar()) {
     switch (*v.type_tag()) {
       case Variant::TYPE_BOOL:   {UA_Boolean b = v.get_bool(); opcua::Variant r; r.assign(b);

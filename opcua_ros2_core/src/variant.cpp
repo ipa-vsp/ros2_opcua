@@ -1,5 +1,16 @@
 // Copyright 2024 Vishnuprasad Prachandabhanu
-// SPDX-License-Identifier: Apache-2.0
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 #include "opcua_ros2_core/variant.hpp"
 
 #include <stdexcept>
@@ -209,11 +220,10 @@ Variant Variant::from_ros(const opcua_ros2_interfaces::msg::Variant & msg)
       case TYPE_STRING:          v.string_val_ = msg.string_value; break;
       case TYPE_NODEID: {
           const auto & nid = msg.nodeid_value;
-          using NT = decltype(nid.identifier_type);
           if (nid.identifier_type == 0 /* numeric */) {
-            v.node_id_val_ = NodeId{nid.namespace_index, nid.numeric_id}
+            v.node_id_val_ = NodeId{nid.namespace_index, nid.numeric_id};
           } else if (nid.identifier_type == 1 /* string */) {
-            v.node_id_val_ = NodeId{nid.namespace_index, nid.string_id}
+            v.node_id_val_ = NodeId{nid.namespace_index, nid.string_id};
           } else if (nid.identifier_type == 2 /* guid */) {
             Guid g;
             std::copy(nid.guid_id.uuid.begin(), nid.guid_id.uuid.end(), g.begin());

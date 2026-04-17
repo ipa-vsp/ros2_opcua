@@ -1,0 +1,26 @@
+uint8 SECURITY_MODE_NONE             = 0
+uint8 SECURITY_MODE_SIGN             = 1
+uint8 SECURITY_MODE_SIGN_AND_ENCRYPT = 2
+
+# Goal
+string endpoint_url
+string application_uri
+uint8 security_mode
+string security_policy_uri
+string username
+string password
+float64 timeout_sec
+---
+# Result
+bool connected
+StatusCode status
+EndpointDescription selected_endpoint
+---
+# Feedback
+uint8 STATE_DISCOVERING_ENDPOINTS = 0
+uint8 STATE_OPENING_SESSION       = 1
+uint8 STATE_ACTIVATING            = 2
+uint8 STATE_RECONNECTING          = 3
+
+uint8 state
+string message

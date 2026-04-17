@@ -1,0 +1,2 @@
+string locale
+string text

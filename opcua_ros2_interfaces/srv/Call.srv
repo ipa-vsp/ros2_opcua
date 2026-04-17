@@ -1,0 +1,7 @@
+NodeId object_id
+NodeId method_id
+Variant[] input_arguments
+---
+Variant[] output_arguments
+StatusCode status
+StatusCode[] input_argument_results

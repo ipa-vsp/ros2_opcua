@@ -1,0 +1,8 @@
+NodeId node_id
+builtin_interfaces/Time start_time
+builtin_interfaces/Time end_time
+uint32 num_values_per_node
+bool return_bounds
+---
+DataValue[] history_values
+StatusCode status

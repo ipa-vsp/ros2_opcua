@@ -1,0 +1,6 @@
+NodeId[] node_ids
+uint32 attribute_id   # OPC UA AttributeId (1=NodeId 13=Value etc.)
+string index_range    # optional OPC UA NumericRange; empty means whole value
+---
+DataValue[] results
+StatusCode status

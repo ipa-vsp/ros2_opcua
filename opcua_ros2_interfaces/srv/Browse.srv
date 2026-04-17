@@ -1,0 +1,12 @@
+uint8 BROWSE_DIRECTION_FORWARD  = 0
+uint8 BROWSE_DIRECTION_INVERSE  = 1
+uint8 BROWSE_DIRECTION_BOTH     = 2
+
+NodeId start_node
+NodeId reference_type_filter
+bool include_subtypes
+uint8 browse_direction
+uint8 node_class_mask   # bitmask of OPC UA NodeClass values
+uint8 result_mask       # bitmask of BrowseResultMask bits
+---
+BrowseResult result

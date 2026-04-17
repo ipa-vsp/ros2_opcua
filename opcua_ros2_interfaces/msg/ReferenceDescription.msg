@@ -1,0 +1,7 @@
+NodeId reference_type_id
+bool is_forward
+NodeId node_id
+QualifiedName browse_name
+LocalizedText display_name
+uint8 node_class
+NodeId type_definition

@@ -1,0 +1,6 @@
+Variant value
+StatusCode status
+builtin_interfaces/Time source_timestamp
+uint16 source_picoseconds
+builtin_interfaces/Time server_timestamp
+uint16 server_picoseconds

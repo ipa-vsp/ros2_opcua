@@ -1,0 +1,10 @@
+# Google-derived, 100-column.
+BasedOnStyle: Google
+ColumnLimit: 100
+IndentWidth: 2
+AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: Inline
+DerivePointerAlignment: false
+PointerAlignment: Middle
+IncludeBlocks: Preserve
+SortIncludes: CaseSensitive

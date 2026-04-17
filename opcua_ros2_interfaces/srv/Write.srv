@@ -1,0 +1,7 @@
+NodeId[] node_ids
+uint32 attribute_id
+DataValue[] values
+string index_range    # optional OPC UA NumericRange
+---
+StatusCode[] per_node_status
+StatusCode status
